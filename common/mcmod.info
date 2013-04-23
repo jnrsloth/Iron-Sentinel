@@ -1,0 +1,20 @@
+[
+{
+  "modid": "IS",
+  "name": "Iron Sentinel",
+  "description": "Added control over Iron golems",
+  "version": "0.0.1",
+  "url": "https://github.com/jnrsloth/Iron-Sentinel",
+  "updateUrl": "",
+  "authorList": [
+    "Supernaturali"
+  ],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [
+  ],
+  "parent":"",
+  "dependencies": [
+  ]
+}
+]
