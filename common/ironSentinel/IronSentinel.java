@@ -1,5 +1,7 @@
 package ironSentinel;
 
+
+import ironSentinel.block.ModBlocks;
 import ironSentinel.lib.Reference;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -17,11 +19,12 @@ public class IronSentinel {
 
     @PreInit
     public void preInit (FMLPreInitializationEvent event) {
+        ModBlocks.init();
     }
     
     @Init
     public void init(FMLInitializationEvent event){
-        
+        //ModLoader.registerEntityID(EntitySentinel.class, "Sentinel", Reference.SENTINEL_ENTITY_DEFAULT);
     }
     
     @PostInit
