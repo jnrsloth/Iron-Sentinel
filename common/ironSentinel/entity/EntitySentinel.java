@@ -1,4 +1,5 @@
-package ironSenitel.entity;
+package ironSentinel.entity;
+
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -13,6 +14,8 @@ import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityGolem;
 import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,7 +38,7 @@ public class EntitySentinel extends EntityGolem
     public EntitySentinel(World par1World)
     {
         super(par1World);
-        this.texture = "/entities/Sentinel_golem.png";
+        this.texture = "/mods/is/textures/models/Sentinel_golem.png";
         this.setSize(1.4F, 2.9F);
         this.getNavigator().setAvoidsWater(true);
         this.tasks.addTask(1, new EntityAIAttackOnCollide(this, 0.25F, true));
@@ -144,11 +147,10 @@ public class EntitySentinel extends EntityGolem
     /**
      * Returns true if this entity can attack entities of the specified class.
      */
-    public boolean canAttackClass(Class par1Class)
+    public boolean canAttackClass(Object var1)
     {
-        return this.isPlayerCreated() && EntityPlayer.class.isAssignableFrom(par1Class) ? false : super.canAttackClass(par1Class);
+        return EntityVillager.class != var1 && EntityBat.class != var1;
     }
-
     /**
      * (abstract) Protected helper method to write subclass entity data to NBT.
      */

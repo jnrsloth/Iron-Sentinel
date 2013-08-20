@@ -1,29 +1,31 @@
 package ironSentinel.block;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import ironSentinel.lib.Reference;
+import ironSentinel.lib.Strings;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import ironSentinel.lib.Reference;
-import ironSentinel.lib.Strings;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockSentrymarker extends Block {
 
-    public BlockSentrymarker(int id) {
+    public BlockSentrymarker(int var1)
+    {
+        super(var1, Material.plants);
+        this.setHardness(1.5F);
+        this.setResistance(1.0F);
+        this.setLightValue(1.0F);
+        this.setStepSound(Block.soundMetalFootstep);
+        this.setUnlocalizedName(Strings.SENTRYMARKER_NAME);
+        this.setCreativeTab(CreativeTabs.tabBlock);
         
-        super(id, Material.plants);
-        blockHardness = 1.5F;
-        setStepSound(Block.soundMetalFootstep);
-        setUnlocalizedName(Strings.SENTRYMARKER_NAME);
-        setCreativeTab(CreativeTabs.tabBlock);
-        // TODO Auto-generated constructor stub
     }
-    @Override
+   
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
 
-        blockIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + this.getUnlocalizedName2());
+        this.blockIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + this.getUnlocalizedName2());
     }
 }

@@ -1,12 +1,12 @@
 package ironSentinel.block;
 
+import ironSentinel.entity.EntitySentinel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
-import ironSenitel.entity.EntitySentinel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
@@ -106,7 +106,7 @@ public class BlockRedPumpkin extends BlockDirectional
      */
     public void registerIcons(IconRegister par1IconRegister)
     {
-        this.field_94475_c = par1IconRegister.registerIcon(this.blockType ? "pumpkin_jack" : "pumpkin_face");
+        this.field_94475_c = par1IconRegister.registerIcon(this.blockType ? "pumpkin_face" : "pumpkin_face");
         this.field_94474_b = par1IconRegister.registerIcon("pumpkin_top");
         this.blockIcon = par1IconRegister.registerIcon("pumpkin_side");
     }

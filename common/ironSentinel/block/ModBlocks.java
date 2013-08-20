@@ -17,7 +17,7 @@ public class ModBlocks {
         redpumpkin = new BlockRedPumpkin(BlockIds.REDPUMPKIN_DEFAULT, false);
         
         GameRegistry.registerBlock(sentrymarker, Strings.SENTRYMARKER_NAME);
-        GameRegistry.registerBlock(redpumpkin, Strings.SENTRYMARKER_NAME);
+        GameRegistry.registerBlock(redpumpkin, Strings.REDPUMPKIN_NAME);
 
         //initBlockRecipes();
 
