@@ -3,22 +3,28 @@ package ironSentinel.entity;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIAttackOnCollide;
+import net.minecraft.entity.ai.EntityAIFollowOwner;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
-import net.minecraft.entity.ai.EntityAIMoveTwardsRestriction;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAIOwnerHurtByTarget;
+import net.minecraft.entity.ai.EntityAIOwnerHurtTarget;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.monster.EntityGolem;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.EntityBat;
-import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.src.ModLoader;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -27,7 +33,8 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class EntitySentinel extends EntityGolem
+
+public class EntitySentinel extends EntityTameable
 {
     /** deincrements, and a distance-to-home check is done at 0 */
     private int homeCheckTimer = 0;
@@ -38,23 +45,31 @@ public class EntitySentinel extends EntityGolem
     public EntitySentinel(World par1World)
     {
         super(par1World);
-        this.texture = "/mods/is/textures/models/Sentinel_golem.png";
         this.setSize(1.4F, 2.9F);
         this.getNavigator().setAvoidsWater(true);
         this.tasks.addTask(1, new EntityAIAttackOnCollide(this, 0.25F, true));
+        this.tasks.addTask(2, this.aiSit);
         this.tasks.addTask(2, new EntityAIMoveTowardsTarget(this, 0.22F, 32.0F));
-        this.tasks.addTask(3, new EntityAIMoveTwardsRestriction(this, 0.16F));
-        this.tasks.addTask(4, new EntityAIWander(this, 0.16F));
+        this.tasks.addTask(3, new EntityAIMoveTowardsRestriction(this, 0.16F));
+        this.tasks.addTask(4, new EntityAIWander(this, 0.6D));
+        this.tasks.addTask(4, new EntityAIFollowOwner(this, 1.0D, 10.0F, 2.0F));
         this.tasks.addTask(5, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
         this.tasks.addTask(6, new EntityAILookIdle(this));
-        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityLiving.class, 16.0F, 0, false, true, IMob.mobSelector));
+        
+        this.targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
+        this.targetTasks.addTask(2, new EntityAIHurtByTarget(this, false));
+        this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
+        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityLiving.class, 0, false, true, IMob.mobSelector));
+        
+        
+        
     }
+    
 
     protected void entityInit()
     {
         super.entityInit();
-        this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
+        this.dataWatcher.addObject(ModLoader.getUniqueEntityId(), Byte.valueOf((byte)0));
     }
 
     /**
@@ -64,6 +79,18 @@ public class EntitySentinel extends EntityGolem
     {
         return true;
     }
+    
+    public void setAttackTarget(EntityLiving par1EntityLiving)
+    {
+        super.setAttackTarget(par1EntityLiving);
+    }
+
+      /*  if (par1EntityLiving instanceof EntityPlayer)
+        {
+            
+            this.setAngry(true);
+        }
+    }*/
 
     /**
      * main AI tick function, replaces updateEntityActionState
@@ -77,12 +104,12 @@ public class EntitySentinel extends EntityGolem
 
             if (this.villageObj == null)
             {
-                this.detachHome();
+                this.func_110177_bN();
             }
             else
             {
                 ChunkCoordinates chunkcoordinates = this.villageObj.getCenter();
-                this.setHomeArea(chunkcoordinates.posX, chunkcoordinates.posY, chunkcoordinates.posZ, (int)((float)this.villageObj.getVillageRadius() * 0.6F));
+                this.func_110171_b(chunkcoordinates.posX, chunkcoordinates.posY, chunkcoordinates.posZ, (int)((float)this.villageObj.getVillageRadius() * 0.6F));
             }
         }
 
@@ -106,7 +133,7 @@ public class EntitySentinel extends EntityGolem
     {
         if (par1Entity instanceof IMob && this.getRNG().nextInt(20) == 0)
         {
-            this.setAttackTarget((EntityLiving)par1Entity);
+            this.setAttackTarget((EntityLivingBase)par1Entity);
         }
 
         super.collideWithEntity(par1Entity);
@@ -147,10 +174,11 @@ public class EntitySentinel extends EntityGolem
     /**
      * Returns true if this entity can attack entities of the specified class.
      */
-    public boolean canAttackClass(Object var1)
+    public boolean canAttackClass(Class par1Class)
     {
-        return EntityVillager.class != var1 && EntityBat.class != var1;
+        return this.isPlayerCreated() && EntityPlayer.class.isAssignableFrom(par1Class) ? false : super.canAttackClass(par1Class);
     }
+    
     /**
      * (abstract) Protected helper method to write subclass entity data to NBT.
      */
@@ -173,7 +201,7 @@ public class EntitySentinel extends EntityGolem
     {
         this.attackTimer = 10;
         this.worldObj.setEntityState(this, (byte)4);
-        boolean flag = par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), 7 + this.rand.nextInt(15));
+        boolean flag = par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float)(7 + this.rand.nextInt(15)));
 
         if (flag)
         {
@@ -183,11 +211,62 @@ public class EntitySentinel extends EntityGolem
         this.playSound("mob.irongolem.throw", 1.0F, 1.0F);
         return flag;
     }
-
-    public Village getVillage()
+    
+    
+    public boolean interact(EntityPlayer par1EntityPlayer)
     {
-        return this.villageObj;
+        ItemStack itemstack = par1EntityPlayer.inventory.getCurrentItem();
+        
+         
+        if (this.isTamed())
+        {
+            
+           if (par1EntityPlayer.username.equalsIgnoreCase(this.getOwnerName()) && !this.worldObj.isRemote)
+            {
+                this.aiSit.setSitting(!this.isSitting());
+                this.isJumping = false;
+                this.setPathToEntity((PathEntity)null);
+            }
+        }
+        
+        else if(!this.isTamed() && itemstack != null && itemstack.itemID == Block.plantRed.blockID)
+        {
+            if (!par1EntityPlayer.capabilities.isCreativeMode)
+            {
+                --itemstack.stackSize;
+            }
+
+            if (itemstack.stackSize <= 0)
+            {
+                par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack)null);
+            }
+
+            if (!this.worldObj.isRemote)
+            {
+                if (this.rand.nextInt(3) == 0)
+                {
+                    this.setTamed(true);
+                    this.setPathToEntity((PathEntity)null);
+                    this.setAttackTarget((EntityLiving)null);
+                    this.aiSit.setSitting(true);
+                    this.setEntityHealth(100);
+                    this.setOwner(par1EntityPlayer.username);
+                    this.playTameEffect(true);
+                    this.worldObj.setEntityState(this, (byte)7);
+                }
+                else
+                {
+                    this.playTameEffect(false);
+                    this.worldObj.setEntityState(this, (byte)6);
+                }
+            }
+
+            return true;
+        }
+
+        return super.interact(par1EntityPlayer);
     }
+
 
     @SideOnly(Side.CLIENT)
     public void handleHealthUpdate(byte par1)
@@ -308,5 +387,12 @@ public class EntitySentinel extends EntityGolem
         }
 
         super.onDeath(par1DamageSource);
+    }
+
+
+    @Override
+    public EntityAgeable createChild(EntityAgeable entityageable) {
+        
+        return null;
     }
 }

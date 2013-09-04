@@ -1,6 +1,8 @@
 package ironSentinel.block;
 
 import ironSentinel.entity.EntitySentinel;
+import ironSentinel.lib.Reference;
+import ironSentinel.lib.Strings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
@@ -16,29 +18,49 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockRedPumpkin extends BlockDirectional
 {
-    /** Boolean used to seperate different states of blocks */
-    private boolean blockType;
-    @SideOnly(Side.CLIENT)
-    private Icon field_94474_b;
-    @SideOnly(Side.CLIENT)
-    private Icon field_94475_c;
+    /** Boolean used to separate different states of blocks */
+	@SideOnly(Side.CLIENT)
+	public static Icon topIcon;
+	@SideOnly(Side.CLIENT)
+	public static Icon bottomIcon;
+	@SideOnly(Side.CLIENT)
+	public static Icon sideIcon;
+	@SideOnly(Side.CLIENT)
+	public static Icon frontIcon;
 
     protected BlockRedPumpkin(int par1, boolean par2)
     {
         super(par1, Material.pumpkin);
+        this.setHardness(1.0F);
+        this.setStepSound(Block.soundWoodFootstep);
+        this.setLightValue(1.0F);
+        this.setResistance(1.0F);
         this.setTickRandomly(true);
-        this.blockType = par2;
+        //this.blockType = par2;
         this.setCreativeTab(CreativeTabs.tabBlock);
+        this.setUnlocalizedName(Strings.REDPUMPKIN_NAME);
     }
 
-    @SideOnly(Side.CLIENT)
+    
 
     /**
      * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
      */
-    public Icon getIcon(int par1, int par2)
-    {
-        return par1 == 1 ? this.field_94474_b : (par1 == 0 ? this.field_94474_b : (par2 == 2 && par1 == 2 ? this.field_94475_c : (par2 == 3 && par1 == 5 ? this.field_94475_c : (par2 == 0 && par1 == 3 ? this.field_94475_c : (par2 == 1 && par1 == 4 ? this.field_94475_c : this.blockIcon)))));
+    @Override
+    @SideOnly(Side.CLIENT)
+    public Icon getIcon(int side, int metadata) {
+    	if (side == 0){
+    		return bottomIcon;
+    	}
+    	else if (side == 1){
+    		return topIcon;
+    	}
+    	else if (side == 2){
+    		return frontIcon;
+    	}
+    	else {
+    		return sideIcon;
+    	}
     }
 
     /**
@@ -97,17 +119,19 @@ public class BlockRedPumpkin extends BlockDirectional
         int l = MathHelper.floor_double((double)(par5EntityLiving.rotationYaw * 4.0F / 360.0F) + 2.5D) & 3;
         par1World.setBlockMetadataWithNotify(par2, par3, par4, l, 2);
     }
-
+    
+    @Override
     @SideOnly(Side.CLIENT)
 
     /**
      * When this method is called, your block should register all the icons it needs with the given IconRegister. This
      * is the only chance you get to register icons.
      */
-    public void registerIcons(IconRegister par1IconRegister)
+    public void registerIcons(IconRegister icon)
     {
-        this.field_94475_c = par1IconRegister.registerIcon(this.blockType ? "pumpkin_face" : "pumpkin_face");
-        this.field_94474_b = par1IconRegister.registerIcon("pumpkin_top");
-        this.blockIcon = par1IconRegister.registerIcon("pumpkin_side");
+        this.sideIcon = icon.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + "pumpkin_Side");
+        this.topIcon = icon.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + "pumpkin_top");
+        this.bottomIcon = icon.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + "pumpkin_top");
+        this.frontIcon = icon.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + "pumpkin_red");
     }
 }
