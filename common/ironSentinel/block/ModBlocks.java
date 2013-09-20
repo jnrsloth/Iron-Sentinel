@@ -2,6 +2,7 @@ package ironSentinel.block;
 
 import ironSentinel.lib.BlockIds;
 import ironSentinel.lib.Strings;
+import ironSentinel.tileentity.TileEntitySentryMarker;
 import net.minecraft.block.Block;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -15,7 +16,7 @@ public class ModBlocks {
     public static void init() {
 
         sentrymarker = new BlockSentrymarker(BlockIds.SENTRYMARKER_DEFAULT);
-        redpumpkin = new BlockRedPumpkin(BlockIds.REDPUMPKIN_DEFAULT, false);
+        redpumpkin = new BlockRedPumpkin(BlockIds.REDPUMPKIN_DEFAULT);
             }   
         
         public static void registerBlocks() {
@@ -28,7 +29,9 @@ public class ModBlocks {
             LanguageRegistry.addName(redpumpkin, Strings.REDPUMPKIN_NAME);
             }
             
-        
+            public static void registerTileEntities() {
+            	GameRegistry.registerTileEntity(TileEntitySentryMarker.class, "SentryMarkerIS");
+            }
         //initBlockRecipes();
 
     }

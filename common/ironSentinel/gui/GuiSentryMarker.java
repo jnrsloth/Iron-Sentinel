@@ -1,47 +1,37 @@
 package ironSentinel.gui;
 
+import ironSentinel.container.ContainerSentryMarker;
 import ironSentinel.lib.Reference;
 import ironSentinel.lib.Textures;
+import ironSentinel.tileentity.TileEntitySentryMarker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-public class GuiSentryMarker extends GuiScreen{
-	public static final ResourceLocation texture = new ResourceLocation(Reference.MOD_ID, Textures.SENTINEL_SCREEN);
+
+public class GuiSentryMarker extends GuiContainer{
+	public static final ResourceLocation texture = new ResourceLocation(Reference.MOD_ID, Textures.MARKER_GUI);
     
+	public int xSizeOfTexture = 176;
+    public int ySizeOfTexture = 165;
     
-    public final int xSizeOfTexture = 176;
-    public final int ySizeOfTexture = 88;
+	public GuiSentryMarker(InventoryPlayer invPlayer, TileEntitySentryMarker entity) {
+		super(new ContainerSentryMarker(invPlayer,entity));
+			 xSizeOfTexture = 176;
+			 ySizeOfTexture = 165;
+	}
     
-    public GuiSentryMarker (EntityPlayer Player){
-        
-    }
+   
     @Override
-    public void drawScreen(int x, int y, float f){
-        
-        drawDefaultBackground();
-        
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        Minecraft.getMinecraft().func_110434_K().func_110577_a(texture);
-        
-        int xStart = (width - xSizeOfTexture) / 2;
-        int yStart = (height - ySizeOfTexture) / 2;
-        
-        this.drawTexturedModalRect(xStart, yStart, 0, 0, xSizeOfTexture, ySizeOfTexture);
-        
-        super.drawScreen(x, y, f);
+    public void drawGuiContainerBackgroundLayer(float f, int j, int i) {
+    	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    	Minecraft.getMinecraft().func_110434_K().func_110577_a(texture);
+    	drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSizeOfTexture, ySizeOfTexture);
     }
-    @Override
-    public void initGui(){
         
-    this.buttonList.clear();
     
-    int xStart = (this.width - xSizeOfTexture) / 2;
-    int yStart = (this.height - ySizeOfTexture) / 2;
-    this.buttonList.add(new GuiButton(0, xStart+ 40, yStart + 40, 100, 20, "no use"));
-    }
+    
 }

@@ -28,7 +28,7 @@ public class BlockRedPumpkin extends BlockDirectional
 	@SideOnly(Side.CLIENT)
 	public static Icon frontIcon;
 
-    protected BlockRedPumpkin(int par1, boolean par2)
+    public BlockRedPumpkin(int par1)
     {
         super(par1, Material.pumpkin);
         this.setHardness(1.0F);

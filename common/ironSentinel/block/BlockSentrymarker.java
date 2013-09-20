@@ -3,17 +3,20 @@ package ironSentinel.block;
 import ironSentinel.IronSentinel;
 import ironSentinel.lib.Reference;
 import ironSentinel.lib.Strings;
+import ironSentinel.tileentity.TileEntitySentryMarker;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockSentrymarker extends Block {
+public class BlockSentrymarker extends BlockContainer {
 
     public BlockSentrymarker(int var1)
     {
@@ -33,10 +36,14 @@ public class BlockSentrymarker extends Block {
         this.blockIcon = icon.registerIcon(Reference.MOD_ID.toLowerCase() + ":" + "sentrymarker");
     }
     @Override
+    public TileEntity createNewTileEntity(World world) {
+    return new TileEntitySentryMarker;
+    }
+    @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
     	if(!world.isRemote) {
     		FMLNetworkHandler.openGui(player, IronSentinel.instance, 0, world, x, y, z);
-    	}
+    	}	    
     	return true;
     }
 }

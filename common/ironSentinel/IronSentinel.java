@@ -53,6 +53,7 @@ public class IronSentinel {
         ModBlocks.init();
         ModBlocks.registerBlocks();
         ModBlocks.addNames();
+        ModBlocks.registerTileEntities();
         
       //stuff for the Sentinel Entity rendering and registering in the game
         EntityRegistry.registerModEntity(ironSentinel.entity.EntitySentinel.class, "Iron Sentinel", 1, this, 80, 3, true);
